@@ -4,28 +4,111 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="src/style.css">
     <title>Vite App</title>
     <style>
       input{
         font-size: 1em;
       }
     </style>
+    <script>
+      // Функция валидации
+      function validateForm() {
+          // Получаем значения из формы
+          var name = document.getElementById('name').value;
+          var surname = document.getElementById('surname').value;
+          var email = document.getElementById('email').value;
+          var password = document.getElementById('password').value;
+          var confirmPassword = document.getElementById('confirmPassword').value;
+          var birthDate = document.getElementById('birthDate').value;
+        
+          // Валидация имени и фамилии
+          if (name === '') {
+            alert('Пожалуйста, заполните имя');
+            document.getElementById('name').classList.add('border-red-500');
+            return false;
+          }
+          document.getElementById('name').classList.add('border-green-500');
+
+          if (surname === ''){
+            alert('Пожалуйста, заполните фамилию');
+            document.getElementById('surname').classList.add('border-red-500');
+
+            return false;
+          }
+        
+          // Валидация электронной почты
+          var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+          if (!emailRegex.test(email)) {
+            alert('Неправильный формат электронной почты');
+            return false;
+          }
+        
+          // Валидация пароля
+          var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+          if (!passwordRegex.test(password)) {
+            alert('Пароль должен содержать не менее 8 символов, включая заглавные и строчные буквы, цифры и специальные символы');
+            return false;
+          }
+        
+          // Валидация подтверждения пароля
+          if (password!== confirmPassword) {
+            alert('Пароли не совпадают');
+            return false;
+          }
+        
+          // Валидация даты рождения
+          var birthDateParts = birthDate.split('-');
+          var birthDateObj = new Date(birthDateParts[0], birthDateParts[1] - 1, birthDateParts[2]);
+          var age = calculateAge(birthDateObj);
+          if (age < 18) {
+            alert('Вы должны быть не менее 18 лет');
+            return false;
+          }
+        
+          // Если все проверки пройдены, возвращаем true
+          return true;
+        }
+        
+        // Функция расчета возраста
+        function calculateAge(birthDate) {
+          var today = new Date();
+          var age = today.getFullYear() - birthDate.getFullYear();
+          var m = today.getMonth() - birthDate.getMonth();
+          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+          }
+          return age;
+        }
+    </script>
   </head>
   <body>
     <div id="app"></div>
-    <div style="text-align: center; ">
-      <form>
-        <h1>Вход в систему</h1>
-        <div style="display: flex; flex-direction: column; width: 200px; margin-left: auto; margin-right: auto; gap: 10px; ">
-          <input type="text" placeholder="Имя"/>
-          <input type="text" placeholder="Фамилия"/>
-          <input type="email" placeholder="Почта"/>
-          <input type="password" placeholder="Пароль"/>
-          <input type="password" placeholder="Повтор пароля"/>
-          <input type="date" placeholder="Дата рождения"/>
-          <button style="font-size: 1.2em; padding: 0.5em; border-radius: 0.5em; background-color: white; "> Отправить</button>
-        </div>
-      </form>
+    <form id="myForm" class="border-4 p-4  w-1/2 ml-auto mr-auto mt-20 hover:border-blue-500" >
+        <label for="name" class="">Имя:</label>
+        <input type="text" id="name" name="name" class="border-4 border-blue-100 p-0.1 rounded invalid:text-pink-600 "> <br><br>
+        <label for="surname">Фамилия:</label>
+        <input type="text" id="surname" name="surname"><br><br>
+        <label for="email">Электронная почта:</label>
+        <input type="email" id="email" name="email"><br><br>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password"><br><br>
+        <label for="confirmPassword">Подтверждение пароля:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword"><br><br>
+        <label for="birthDate">Дата рождения:</label>
+        <input type="date" id="birthDate" name="birthDate"><br><br>
+        <button type="submit">Отправить</button>
+    </form>
+    
+    <script>
+      document.getElementById('myForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (!validateForm()) {
+          event.preventDefault();
+        }
+      });
+    </script>
+      
     </div>
   </body>
 </html>
